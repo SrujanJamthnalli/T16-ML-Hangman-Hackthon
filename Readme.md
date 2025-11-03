@@ -1,5 +1,7 @@
 # Hangman ML Hackathon - UE23CS352A
 
+Team: PES1UG24AM814, PES1UG23AM917, PES1UG23AM347
+
 ## 📋 Project Overview
 
 This project implements an intelligent Hangman game solver using:
