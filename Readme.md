@@ -1,146 +1,83 @@
-# Hangman ML Hackathon - UE23CS352A
+Hangman Reinforcement Learning - Project README
+👥 Authors
 
-Team: PES1UG24AM814, PES1UG23AM917, PES1UG23AM347
+Developed as part of ML Hackathon coursework
 
-## 📋 Project Overview
+Team Members:
+- PES1UG23AM917 - CHANDAN R
+-PES1UG24AM814 – SRUJAN J
+-PES1UG23AM347 - CHAKRESH
 
-This project implements an intelligent Hangman game solver using:
-1. **Hidden Markov Model (HMM)** - For letter probability estimation
-2. **Reinforcement Learning (RL)** - For optimal letter guessing strategy
+📋 Project Overview
 
-## 🎯 Objective
+This project implements an intelligent Hangman game solver using a combination of a Hidden Markov Model (HMM) for probabilistic letter predictions and a Deep Q-Network (DQN) for decision-making. 
+The goal is to create an agent that plays Hangman efficiently, maximizing success rate while minimizing wrong and repeated guesses.
 
-Build an agent that plays Hangman efficiently:
-- Maximizes win rate (success rate)
-- Minimizes wrong guesses
-- Minimizes repeated guesses
+🎯 Objective
 
-## 📊 Evaluation
+Build an RL agent that can learn optimal guessing behavior through interaction with the Hangman environment, leveraging letter transition probabilities derived from the HMM model.
 
-The agent will be evaluated on **2000 test words** with **6 lives per game**.
+📁 Project Structure
 
-**Scoring Formula:**
-```
-Final Score = (Success Rate × 2000) - (Total Wrong Guesses × 5) - (Total Repeated Guesses × 2)
-```
+├── hmm_model.py       # Builds and trains the HMM for letter probability estimation
+├── train.py           # DQN training loop with replay buffer and target network
+├── stimulate.py       # Simulates a single Hangman game using trained model
+├── evaluate.py        # Evaluates the trained DQN agent on test words
+├── requirements.txt   # All required Python dependencies
+└── dqn_hangman_model.pth  # Saved trained model weights
 
-## 📁 Project Structure
+⚙️ Installation
 
-```
-ml-hackathon/
-├── Data/
-│   ├── corpus.txt          # 50,000 training words
-│   └── test.txt            # 2,000 test words
-├── notebooks/              # Jupyter notebooks
-│   ├── 01_HMM.ipynb
-│   ├── 02_RL_Agent.ipynb
-│   ├── 03_Training.ipynb
-│   ├── 04_Evaluation.ipynb
-│   └── 05_Complete_Solution.ipynb
-├── src/                    # Python source files
-│   ├── environment.py      # Hangman game environment
-│   ├── hmm_model.py        # HMM implementation
-│   ├── rl_agent.py         # RL agent implementation
-│   └── utils.py            # Helper functions
-├── TASK_BREAKDOWN.md       # Detailed task breakdown
-├── QUICK_START.md          # Quick start guide
-├── Analysis_Report.pdf     # Final analysis report
-└── README.md               # This file
-```
+1. Clone or download the repository containing all source files.
+2. Install dependencies using:
 
-## 🚀 Quick Start
+•	pip install -r requirements.txt
 
-See `QUICK_START.md` for a step-by-step guide.
+3. Ensure Python ≥ 3.9 and PyTorch ≥ 2.0 are installed.
 
-### Installation
+🚀 Usage
 
-```bash
-pip install numpy pandas matplotlib seaborn scikit-learn hmmlearn
-# Optional: for Deep Q-Networks
-pip install torch
-```
+To train the model from scratch:
 
-### Basic Usage
+•	python train.py
 
-```python
-from src.environment import HangmanEnv
-from src.hmm_model import HangmanHMM
-from src.rl_agent import QLearningAgent
+To test the trained agent on evaluation words:
 
-# Train HMM
-hmm = HangmanHMM()
-hmm.train('Data/corpus.txt')
+•	python evaluate.py
 
-# Train RL Agent
-agent = QLearningAgent()
-# ... training loop ...
+To visualize step-by-step predictions for a specific word:
 
-# Evaluate
-results = evaluate_agent(agent, hmm, 'Data/test.txt')
-print(f"Success Rate: {results['success_rate']}")
-print(f"Final Score: {results['final_score']}")
-```
+•	python stimulate.py
+🧠 Technical Details
 
-## 📝 Deliverables
+• **State Representation (54D)**: Combination of 26 HMM posterior probabilities, 26 binary guessed indicators, and 2 normalized scalars (blanks_left, lives_left).
 
-1. **Jupyter Notebooks** - Complete implementation with:
-   - HMM construction and training
-   - RL environment and agent design
-   - Training loops and hyperparameters
-   - Evaluation results and plots
+• **HMM (hmm_model.py)**: 
+  - Trains a bigram transition model using Laplace smoothing.
+  - Computes posterior probabilities for letter positions given masked patterns.
 
-2. **Analysis_Report.pdf** - Analysis covering:
-   - Key observations and insights
-   - HMM and RL design choices
-   - Exploration strategies
-   - Future improvements
+• **DQN (train.py)**: 
+  - Uses replay buffer and target network for stability.
+  - Employs ε-greedy policy with decaying ε for exploration-exploitation tradeoff.
+  - Reward shaping encourages correct predictions and penalizes repetition.
 
-3. **Demo & Viva** - Live demonstration and presentation
+• **Evaluation (evaluate.py)**: 
+  - Runs multiple games, logging success rate, wrong/repeated guesses, and final score.
 
-## 🎓 Key Concepts
+📊 Expected Results
 
-### Hidden Markov Model (HMM)
-- Estimates probability of each letter appearing in masked positions
-- Trained on corpus.txt to learn letter patterns and context
+• Success Rate: Target 45-65% after training ~2000 episodes.
+• Wrong Guesses: < 3 per game on average.
+• Repeated Guesses: Approaching 0.
+• Training Time: ~30–40 minutes depending on system performance.
 
-### Reinforcement Learning (RL)
-- Agent learns optimal guessing strategy
-- Uses HMM probabilities + game state to make decisions
-- Balances exploration vs exploitation
+🔮 Future Enhancements
 
-### Hangman Environment
-- Game state: masked word, guessed letters, lives remaining
-- Actions: Guess a letter (A-Z)
-- Rewards: Positive for correct, negative for wrong, bonus for win
+• Use Double or Dueling DQN to improve value stability.
+• Add word embeddings to encode semantic similarity.
+• Train on a larger and more diverse corpus for generalization.
+• Introduce LSTM-based sequential prediction for better letter context understanding.
 
-## 📈 Expected Results
 
-Track these metrics during development:
-- Success Rate: Target > 80%
-- Average Wrong Guesses: Target < 2 per game
-- Average Repeated Guesses: Target = 0
-- Final Score: Maximize!
 
-## 🔧 Development Tips
 
-1. **Start Simple**: Basic Q-learning + simple HMM first
-2. **Iterate Fast**: Test on small subsets before full corpus
-3. **Visualize**: Plot learning curves, letter frequencies, etc.
-4. **Evaluate Early**: Check test performance periodically
-5. **Document**: Comment code, track experiments
-
-## 📚 Resources
-
-- See `TASK_BREAKDOWN.md` for detailed implementation guide
-- See `QUICK_START.md` for quick start instructions
-- Problem statement: `Problem_Statement.pdf`
-
-## 🏆 Success Criteria
-
-- High success rate on test set
-- Low number of wrong guesses
-- Zero repeated guesses
-- Well-documented code and analysis
-- Clear presentation in demo/viva
-
-Good luck! 🎯
